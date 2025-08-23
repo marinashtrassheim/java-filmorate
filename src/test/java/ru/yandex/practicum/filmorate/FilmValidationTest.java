@@ -29,6 +29,7 @@ public class FilmValidationTest {
         validFilm.setReleaseDate(LocalDate.of(2000, 1, 1));
         validFilm.setDuration(120);
     }
+
     @Test
     void whenAllFieldsValid_thenNoViolations() {
         Set<ConstraintViolation<Film>> violations = validator.validate(validFilm);

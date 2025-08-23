@@ -49,7 +49,6 @@ public class UserValidationTest {
     void whenLoginIsBlank_thenOneViolation() {
         validUser.setLogin("");
         Set<ConstraintViolation<User>> violations = validator.validate(validUser);
-
         assertEquals(2, violations.size());
         assertEquals("Поле не должно содержать пробелы", violations.iterator().next().getMessage());
     }
