@@ -17,8 +17,8 @@ public class User {
     private int id;
     @Email(message = "Email должен быть корректным адресом")
     private String email;
-    @NotBlank(message = "Поле не может быть пустым")
-    @Pattern(regexp = "\\S+", message = "Поле не должно содержать пробелы")
+    @NotBlank(message = "Не верный формат логина")
+    @Pattern(regexp = "\\S+", message = "Не верный формат логина")
     private String login;
     private String name;
     private LocalDate birthday;

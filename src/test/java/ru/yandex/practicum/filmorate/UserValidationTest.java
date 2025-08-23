@@ -44,13 +44,12 @@ public class UserValidationTest {
         assertEquals("Email должен быть корректным адресом", violations.iterator().next().getMessage());
     }
 
-
     @Test
     void whenLoginIsBlank_thenOneViolation() {
         validUser.setLogin("");
         Set<ConstraintViolation<User>> violations = validator.validate(validUser);
         assertEquals(2, violations.size());
-        assertEquals("Поле не должно содержать пробелы", violations.iterator().next().getMessage());
+        assertEquals("Не верный формат логина", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -59,7 +58,7 @@ public class UserValidationTest {
         Set<ConstraintViolation<User>> violations = validator.validate(validUser);
 
         assertEquals(1, violations.size());
-        assertEquals("Поле не может быть пустым", violations.iterator().next().getMessage());
+        assertEquals("Не верный формат логина", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -103,8 +102,7 @@ public class UserValidationTest {
         Set<String> messages = violations.stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(java.util.stream.Collectors.toSet());
-
-        assertTrue(messages.contains("Поле не может быть пустым"));
+        assertTrue(messages.contains("Не верный формат логина"));
         assertTrue(messages.contains("Дата рождения не может быть в будущем"));
         assertTrue(messages.contains("Email должен быть корректным адресом"));
     }
