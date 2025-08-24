@@ -31,13 +31,13 @@ public class FilmController {
         return film;
     }
 
-    @PutMapping("/{id}")
-    public Film updateFilm(@Valid @RequestBody Film newFilm, @PathVariable int id) {
-        if (!films.containsKey(id)) {
-            throw new NotFoundException("Фильм с id " + id + " не найден");
+    @PutMapping
+    public Film updateFilm(@Valid @RequestBody Film newFilm) {
+        if (!films.containsKey(newFilm.getId())) {
+            throw new NotFoundException("Фильм с id " + newFilm.getId() + " не найден");
         }
-        newFilm.setId(id);
-        films.put(id, newFilm);
+        newFilm.setId(newFilm.getId());
+        films.put(newFilm.getId(), newFilm);
         log.info("Фильм изменен: ID={}, name={}, description={}",
                 newFilm.getId(), newFilm.getName(), newFilm.getDescription());
         return newFilm;

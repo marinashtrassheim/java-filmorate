@@ -31,13 +31,13 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/{id}")
-    public User updateUser(@Valid @RequestBody User newUser, @PathVariable int id) {
-        if (!users.containsKey(id)) {
-            throw new NotFoundException("Пользователь с id " + id + " не найден");
+    @PutMapping
+    public User updateUser(@Valid @RequestBody User newUser) {
+        if (!users.containsKey(newUser.getId())) {
+            throw new NotFoundException("Пользователь с id " + newUser.getId() + " не найден");
         }
-        newUser.setId(id);
-        users.put(id, newUser);
+        newUser.setId(newUser.getId());
+        users.put(newUser.getId(), newUser);
         log.info("Пользователь изменен: ID={}, email={}, login={}",
                 newUser.getId(), newUser.getEmail(), newUser.getLogin());
         return newUser;
