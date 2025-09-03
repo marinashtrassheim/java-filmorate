@@ -1,0 +1,97 @@
+package ru.yandex.practicum.filmorate.service;
+
+import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.CanNotBeAddedAsFriendException;
+import ru.yandex.practicum.filmorate.exception.CanNotBeRemovedFromFriendException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
+
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+public class UserService {
+    private final UserStorage userStorage;
+
+    public UserService(UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
+
+    public void addFriend(int userId, int friendId) {
+        if (userStorage.userExists(userId)) {
+            throw new NotFoundException("Пользователя с id: " + userId + " не существует");
+        }
+
+        if(userStorage.userExists(friendId)) {
+            throw new NotFoundException("Пользователя с id: " + friendId + " не существует");
+        }
+
+        if(userId == friendId) {
+            throw new CanNotBeAddedAsFriendException("Нельзя добавлять в друзья самого пользователя");
+        }
+        User user = userStorage.getUser(userId);
+        User friendUser = userStorage.getUser(friendId);
+
+        if(user.hasFriend(friendId)) {
+            throw new CanNotBeAddedAsFriendException("Пользователя с id: " + friendId + " уже есть в друзьях");
+        }
+
+        user.addFriend(friendId);
+        friendUser.addFriend(userId);
+    }
+
+    public void removeFriend(int userId, int friendId) {
+        if (userStorage.userExists(userId)) {
+            throw new NotFoundException("Пользователя с id: " + userId + " не существует");
+        }
+
+        if(userStorage.userExists(friendId)) {
+            throw new NotFoundException("Пользователя с id: " + friendId + " не существует");
+        }
+
+        User user = userStorage.getUser(userId);
+        User friendUser = userStorage.getUser(friendId);
+
+        if(!user.hasFriend(friendId)) {
+            throw new CanNotBeRemovedFromFriendException("Пользователя с id: " + friendId + " нет в друзьях");
+        }
+
+        user.removeFriend(friendId);
+        friendUser.removeFriend(userId);
+    }
+
+    public Collection<User> getFriendsDetails(int userId) {
+        if (userStorage.userExists(userId)) {
+            throw new NotFoundException("Пользователя с id: " + userId + " не существует");
+        }
+
+        Set<Integer> friendsId = userStorage.getUserFriends(userId);
+
+        return friendsId.stream()
+                .map(userStorage::getUser) // получаем User по ID
+                .filter(Objects::nonNull)  // фильтруем null (на всякий случай)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<User> friendsOverlap(int userId, int otherUserId) {
+        if (userStorage.userExists(userId)) {
+            throw new NotFoundException("Пользователя с id: " + userId + " не существует");
+        }
+
+        if(userStorage.userExists(otherUserId)) {
+            throw new NotFoundException("Пользователя с id: " + otherUserId + " не существует");
+        }
+
+        Collection<User> userFriends = getFriendsDetails(userId);
+        Collection<User> otherUserFriends = getFriendsDetails(otherUserId);
+
+        return userFriends.stream()
+                .filter(otherUserFriends::contains) // только те, кто есть в обоих списках
+                .collect(Collectors.toList());
+    }
+
+
+}

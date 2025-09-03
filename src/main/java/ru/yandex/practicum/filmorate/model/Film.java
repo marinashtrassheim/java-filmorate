@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 import ru.yandex.practicum.filmorate.validation.NotBefore;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Film.
@@ -24,5 +26,21 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительным числом")
     private long duration;
+    private Set<Integer> userLikes = new HashSet<>();
 
+    public void addLike(int userId) {
+        userLikes.add(userId);
+    }
+
+    public void deleteLike(int userId) {
+        userLikes.remove(userId);
+    }
+
+    public boolean hasLike(int userId) {
+        return userLikes.contains(userId);
+    }
+
+    public int getLikesCount() {
+        return userLikes.size();
+    }
 }
