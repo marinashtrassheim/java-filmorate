@@ -9,5 +9,5 @@ public interface FilmStorage {
     Film updateFilm(Film newFilm);
     Collection<Film> getFilms();
     Film getFilm(int filmId);
-    boolean filmExists(int filmId);
+    boolean isFilmExists(int filmId);
 }

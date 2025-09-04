@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.CanNotAddLike;
+import ru.yandex.practicum.filmorate.exception.CanNotAddLikeException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -22,18 +22,18 @@ public class FilmService {
     }
 
     public Film setLike(int filmId, int userId) {
-        if (userStorage.userExists(userId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if (filmStorage.filmExists(filmId)) {
+        if (!filmStorage.isFilmExists(filmId)) {
             throw new NotFoundException("Фильма с id: " + filmId + " не существует");
         }
 
         Film filmToSetLike = filmStorage.getFilm(filmId);
 
         if(filmToSetLike.hasLike(userId)) {
-            throw new CanNotAddLike("Пользователя с id: " + userId + " уже ставил лайк");
+            throw new CanNotAddLikeException("Пользователя с id: " + userId + " уже ставил лайк");
         }
 
         filmToSetLike.addLike(userId);
@@ -41,18 +41,18 @@ public class FilmService {
     }
 
     public Film deleteLike(int filmId, int userId) {
-        if (userStorage.userExists(userId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if (filmStorage.filmExists(filmId)) {
+        if (!filmStorage.isFilmExists(filmId)) {
             throw new NotFoundException("Фильма с id: " + filmId + " не существует");
         }
 
         Film filmToDeleteLike = filmStorage.getFilm(filmId);
 
         if(!filmToDeleteLike.hasLike(userId)) {
-            throw new CanNotAddLike("Пользователя с id: " + userId + " уже ставил лайк");
+            throw new CanNotAddLikeException("Пользователя с id: " + userId + " уже ставил лайк");
         }
 
         filmToDeleteLike.deleteLike(userId);
@@ -67,6 +67,4 @@ public class FilmService {
         int actualCount = Math.min(count, sortedFilms.size());
         return sortedFilms.subList(0, actualCount);
     }
-
-
 }

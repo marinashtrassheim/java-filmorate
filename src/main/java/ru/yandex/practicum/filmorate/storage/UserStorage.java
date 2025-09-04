@@ -10,7 +10,7 @@ public interface UserStorage {
     User getUser(int userId);
     User createUser(User user);
     User updateUser(User user);
-    boolean userExists(int userId);
+    boolean isUserExists(int userId);
     Set<Integer> getUserFriends(int userId);
 
 }

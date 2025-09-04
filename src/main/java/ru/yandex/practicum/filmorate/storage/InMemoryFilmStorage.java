@@ -42,8 +42,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public boolean filmExists(int filmId) {
-        return !films.containsKey(filmId);
+    public boolean isFilmExists(int filmId) {
+        return films.containsKey(filmId);
     }
 
     private int getNextFilmId() {

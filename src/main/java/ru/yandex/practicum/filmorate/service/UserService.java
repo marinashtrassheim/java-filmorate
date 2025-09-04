@@ -21,11 +21,11 @@ public class UserService {
     }
 
     public void addFriend(int userId, int friendId) {
-        if (userStorage.userExists(userId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if(userStorage.userExists(friendId)) {
+        if(!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + friendId + " не существует");
         }
 
@@ -44,11 +44,11 @@ public class UserService {
     }
 
     public void removeFriend(int userId, int friendId) {
-        if (userStorage.userExists(userId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if(userStorage.userExists(friendId)) {
+        if(!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + friendId + " не существует");
         }
 
@@ -64,7 +64,7 @@ public class UserService {
     }
 
     public Collection<User> getFriendsDetails(int userId) {
-        if (userStorage.userExists(userId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
@@ -77,11 +77,11 @@ public class UserService {
     }
 
     public Collection<User> friendsOverlap(int userId, int otherUserId) {
-        if (userStorage.userExists(userId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if(userStorage.userExists(otherUserId)) {
+        if(!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + otherUserId + " не существует");
         }
 
