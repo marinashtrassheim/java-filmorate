@@ -42,7 +42,7 @@ public class FilmService {
 
     public Film deleteLike(int filmId, int userId) {
         if (!userStorage.isUserExists(userId)) {
-            throw new NotFoundException("Пользователя с id: " + userId + " не существует");
+            throw new CanNotAddLikeException("Пользователя с id: " + userId + " не существует");
         }
 
         if (!filmStorage.isFilmExists(filmId)) {
@@ -52,7 +52,7 @@ public class FilmService {
         Film filmToDeleteLike = filmStorage.getFilm(filmId);
 
         if (!filmToDeleteLike.hasLike(userId)) {
-            throw new CanNotAddLikeException("Пользователя с id: " + userId + " уже ставил лайк");
+            throw new CanNotAddLikeException("Пользователь с id: " + userId + " не ставил лайк этому фильму");
         }
 
         filmToDeleteLike.deleteLike(userId);
