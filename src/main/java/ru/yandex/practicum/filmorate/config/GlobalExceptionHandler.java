@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CanNotAddLikeException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCanNotAddLikeException(CanNotAddLikeException e) {
         return new ErrorResponse("Bad Request", e.getMessage());
     }
