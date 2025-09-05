@@ -32,7 +32,7 @@ public class FilmService {
 
         Film filmToSetLike = filmStorage.getFilm(filmId);
 
-        if(filmToSetLike.hasLike(userId)) {
+        if (filmToSetLike.hasLike(userId)) {
             throw new CanNotAddLikeException("Пользователя с id: " + userId + " уже ставил лайк");
         }
 
@@ -51,7 +51,7 @@ public class FilmService {
 
         Film filmToDeleteLike = filmStorage.getFilm(filmId);
 
-        if(!filmToDeleteLike.hasLike(userId)) {
+        if (!filmToDeleteLike.hasLike(userId)) {
             throw new CanNotAddLikeException("Пользователя с id: " + userId + " уже ставил лайк");
         }
 
