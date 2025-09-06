@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.CanNotAddLikeException;
+import ru.yandex.practicum.filmorate.exception.CanNotDeleteLikeException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -42,7 +43,7 @@ public class FilmService {
 
     public Film deleteLike(int filmId, int userId) {
         if (!userStorage.isUserExists(userId)) {
-            throw new CanNotAddLikeException("Пользователя с id: " + userId + " не существует");
+            throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
         if (!filmStorage.isFilmExists(filmId)) {
@@ -52,7 +53,7 @@ public class FilmService {
         Film filmToDeleteLike = filmStorage.getFilm(filmId);
 
         if (!filmToDeleteLike.hasLike(userId)) {
-            throw new CanNotAddLikeException("Пользователь с id: " + userId + " не ставил лайк этому фильму");
+            throw new CanNotDeleteLikeException("Пользователь с id: " + userId + " не ставил лайк этому фильму");
         }
 
         filmToDeleteLike.deleteLike(userId);

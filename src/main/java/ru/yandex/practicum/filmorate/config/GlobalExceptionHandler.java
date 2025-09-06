@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.dto.ErrorResponse;
-import ru.yandex.practicum.filmorate.exception.CanNotAddLikeException;
-import ru.yandex.practicum.filmorate.exception.CanNotBeAddedAsFriendException;
-import ru.yandex.practicum.filmorate.exception.CanNotBeRemovedFromFriendException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.*;
 
 import java.util.stream.Collectors;
 
@@ -59,6 +56,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CanNotAddLikeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCanNotAddLikeException(CanNotAddLikeException e) {
+        return new ErrorResponse("Bad Request", e.getMessage());
+    }
+
+    @ExceptionHandler(CanNotDeleteLikeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleCanNotDeleteLikeException(CanNotDeleteLikeException e) {
         return new ErrorResponse("Bad Request", e.getMessage());
     }
 
