@@ -25,7 +25,7 @@ import java.util.Set;
 
 @Repository
 @Qualifier("filmDbStorage")
-public class FilmDbStorage implements FilmStorage{
+public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final FilmRowMapper filmRowMapper;
 
@@ -159,7 +159,7 @@ public class FilmDbStorage implements FilmStorage{
     @Override
     public void addLike(int filmId, int userId) {
         String sql = "INSERT INTO film_likes (film_id, user_id) VALUES (?, ?)";
-        if(!isLikeExists(filmId, userId)) {
+        if (!isLikeExists(filmId, userId)) {
             jdbcTemplate.update(sql, filmId, userId);
         } else {
             throw new CanNotAddLikeException("Пользователь уже ставил лайк фильму");

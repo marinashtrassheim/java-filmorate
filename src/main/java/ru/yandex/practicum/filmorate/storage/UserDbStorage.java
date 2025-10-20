@@ -17,7 +17,7 @@ import java.util.*;
 
 @Repository
 @Qualifier("userDbStorage")
-public class UserDbStorage implements UserStorage{
+public class UserDbStorage implements UserStorage {
     private final UserRowMapper userRowMapper;
     private final JdbcTemplate jdbcTemplate;
 
