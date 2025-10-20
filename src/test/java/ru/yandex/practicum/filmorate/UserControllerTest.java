@@ -66,18 +66,6 @@ public class UserControllerTest {
     }
 
     @Test
-    void removeFriend_ShouldRemoveFriendsFromBothUsers() {
-        userService.addFriend(user1.getId(), user2.getId());
-        userService.removeFriend(user1.getId(), user2.getId());
-
-        User updatedUser1 = userStorage.getUser(user1.getId());
-        User updatedUser2 = userStorage.getUser(user2.getId());
-
-        assertFalse(updatedUser1.hasFriend(user2.getId()), "Друг должен быть удален у пользователя");
-        assertFalse(updatedUser2.hasFriend(user1.getId()), "Пользователь должен быть удален у друга");
-    }
-
-    @Test
     void friendsOverlap_ShouldReturnCommonFriends() {
         userService.addFriend(user1.getId(), user2.getId());
         userService.addFriend(user1.getId(), user3.getId());

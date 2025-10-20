@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -14,15 +16,26 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/films")
-@RequiredArgsConstructor
 public class FilmController {
+    @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
     private final FilmService filmService;
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
+    public FilmController(@Qualifier("filmDbStorage") FilmStorage filmStorage, FilmService filmService) {
+        this.filmStorage = filmStorage;
+        this.filmService = filmService;
+    }
+
     @GetMapping
-    public Collection<Film> getFilms() {
-        return filmStorage.getFilms();
+    public ResponseEntity<?> getFilms() {
+        try {
+            Collection<Film> films = filmStorage.getFilms();
+            return ResponseEntity.ok(films);
+        } catch (Exception e) {
+            log.error("Ошибка при получении списка фильмов", e);
+            return ResponseEntity.status(500).body("Внутренняя ошибка сервера");
+        }
     }
 
     @GetMapping("/{id}")
@@ -38,10 +51,18 @@ public class FilmController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Film createFilm(@Valid @RequestBody Film film) {
-        Film createdFilm = filmStorage.createFilm(film);
-        log.info("Фильм создан: ID={}, name={}, description={}",
-                createdFilm.getId(), createdFilm.getName(), createdFilm.getDescription());
-        return createdFilm;
+        try {
+            Film createdFilm = filmStorage.createFilm(film);
+            log.info("Фильм создан: ID={}, name={}, description={}",
+                    createdFilm.getId(), createdFilm.getName(), createdFilm.getDescription());
+            return createdFilm;
+        } catch (NotFoundException e) {
+            log.warn("Ошибка при создании фильма: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Неожиданная ошибка при создании фильма", e);
+            throw new RuntimeException("Внутренняя ошибка сервера", e);
+        }
     }
 
     @PutMapping

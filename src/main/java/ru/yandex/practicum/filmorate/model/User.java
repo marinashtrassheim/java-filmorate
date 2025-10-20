@@ -25,13 +25,14 @@ public class User {
     private String login;
     private String name;
     private LocalDate birthday;
+    private Set<Integer> requestFriends = new HashSet<>();
     private Set<Integer> friends = new HashSet<>();
 
     @AssertTrue(message = "Дата рождения не может быть в будущем")
     @JsonIgnore
     public boolean isBirthdayValid() {
         if (birthday == null) {
-            return true; // если дата не указана - пропускаем
+            return true;
         }
         return !birthday.isAfter(LocalDate.now());
     }
@@ -51,4 +52,9 @@ public class User {
     public boolean hasFriend(int friendId) {
         return friends.contains(friendId);
     }
+
+    public void addRequestFriends(int friendId) {
+        requestFriends.add(friendId);
+    }
+
 }

@@ -1,0 +1,74 @@
+package ru.yandex.practicum.filmorate;
+
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.mappers.FilmRowMapper;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.LocalDate;
+
+@JdbcTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Import({FilmDbStorage.class, FilmRowMapper.class})
+class FilmDbStorageIntegrationTest {
+
+    private final FilmDbStorage filmStorage;
+    private Film film;
+
+    @BeforeEach
+    void setUp() {
+        film = new Film();
+        film.setName("Test Film");
+        film.setDescription("Test Description");
+        film.setReleaseDate(LocalDate.of(2000, 1, 1));
+        film.setDuration(120);
+        Mpa mpa = new Mpa();
+        mpa.setId(1);
+        film.setMpa(mpa);
+        filmStorage.createFilm(film);
+    }
+
+    @Test
+    void createFilm() {
+        Film filmFromDb = filmStorage.getFilm(film.getId());
+        assertEquals("Test Film", filmFromDb.getName());
+        assertEquals("Test Description", filmFromDb.getDescription());
+    }
+
+    @Test
+    void updateFilm() {
+        Film existingFilm = filmStorage.getFilm(film.getId());
+
+        existingFilm.setName("Update Test Film");
+        existingFilm.setDescription("Update Test Description");
+        existingFilm.setReleaseDate(LocalDate.of(2020, 2, 2));
+        existingFilm.setDuration(150);
+        Mpa mpa = new Mpa();
+        mpa.setId(2);
+        existingFilm.setMpa(mpa);
+
+        filmStorage.updateFilm(existingFilm);
+
+        Film filmFromDb = filmStorage.getFilm(existingFilm.getId());
+
+        assertEquals("Update Test Film", filmFromDb.getName());
+        assertEquals("Update Test Description", filmFromDb.getDescription());
+        assertEquals(LocalDate.of(2020, 2, 2), filmFromDb.getReleaseDate());
+        assertEquals(150, filmFromDb.getDuration());
+        assertEquals(2, filmFromDb.getMpa().getId());
+    }
+
+    @Test
+    void setLike_ShouldAddLikeToFilm() {
+
+    }
+}

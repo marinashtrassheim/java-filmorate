@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
@@ -15,11 +15,15 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/users")
-@RequiredArgsConstructor
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserStorage userStorage;
     private final UserService userService;
+
+    public UserController(@Qualifier("userDbStorage") UserStorage userStorage, UserService userService) {
+        this.userStorage = userStorage;
+        this.userService = userService;
+    }
 
     @GetMapping
     public Collection<User> getUsers() {
@@ -72,6 +76,13 @@ public class UserController {
         log.info("Друг ID={} удален из списка друзей пользователя ID={}",
                 id, friendId);
         return  userStorage.getUser(id);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}/confirm")
+    public User confirmFriend(@PathVariable int id, @PathVariable int friendId) {
+        userService.confirmFriend(id, friendId);
+        log.info("Дружба подтверждена между {} и {}", id, friendId);
+        return userStorage.getUser(id);
     }
 
 
