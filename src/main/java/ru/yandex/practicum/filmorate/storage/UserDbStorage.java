@@ -52,7 +52,7 @@ public class UserDbStorage implements UserStorage {
                 "FROM users WHERE id = ?";
         try {
             User user = jdbcTemplate.queryForObject(sql, userRowMapper, userId);
-            if(user != null) {
+            if (user != null) {
                 user.setFriends(getUserFriends(userId));
                 user.setRequestFriends(getFriendRequests(userId));
             }
