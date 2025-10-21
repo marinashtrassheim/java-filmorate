@@ -68,13 +68,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CanNotBeAddedAsFriendException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCanNotBeAddedAsFriendExceptionException(CanNotBeAddedAsFriendException e) {
-        return new ErrorResponse("No content", e.getMessage());
+        return new ErrorResponse("Bad Request", e.getMessage());
     }
 
     @ExceptionHandler(CanNotBeRemovedFromFriendException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCanNotBeRemovedFromFriendExceptionException(CanNotBeRemovedFromFriendException e) {
-        return new ErrorResponse("No content", e.getMessage());
+        return new ErrorResponse("Bad Request", e.getMessage());
     }
 
     @ExceptionHandler(DatabaseException.class)
