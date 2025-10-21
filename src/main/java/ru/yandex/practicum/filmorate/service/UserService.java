@@ -44,6 +44,7 @@ public class UserService {
         }
 
         userStorage.addUserFriend(userId, friendId);
+        confirmFriend(userId, friendId);
     }
 
     public void confirmFriend(int userId, int friendId) {

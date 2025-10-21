@@ -197,7 +197,7 @@ public class FilmDbStorage implements FilmStorage {
     private Set<Genre> getFilmGenres(int filmId) {
         String sql = "SELECT g.* FROM genre g " +
                 "JOIN film_genre fg ON g.id = fg.genre_id " +
-                "WHERE fg.film_id = ?";
+                "WHERE fg.film_id = ? ORDER BY fg.genre_id";
         return new HashSet<>(jdbcTemplate.query(sql, new GenreRowMapper(), filmId));
     }
 

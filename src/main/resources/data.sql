@@ -1,12 +1,11 @@
 MERGE INTO genre (id, name) KEY(id)
 VALUES
-(1, 'COMEDY'),
-(2, 'DRAMA'),
-(3, 'ANIMATION'),
-(4, 'THRILLER'),
-(5, 'DOCUMENTARY'),
-(6, 'ACTION'),
-(7, 'OTHER');
+(1, 'Комедия'),
+(2, 'Драма'),
+(3, 'Мультфильм'),
+(4, 'Триллер'),
+(5, 'Документальный'),
+(6, 'Боевик');
 
 MERGE INTO mpa_rating (id, code, name, description) KEY(id)
 VALUES
