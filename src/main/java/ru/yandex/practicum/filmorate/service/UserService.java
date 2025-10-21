@@ -44,7 +44,6 @@ public class UserService {
         }
 
         userStorage.addUserFriend(userId, friendId);
-        confirmFriend(userId, friendId);
     }
 
     public void confirmFriend(int userId, int friendId) {
@@ -99,7 +98,7 @@ public class UserService {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if (!userStorage.isUserExists(userId)) {
+        if (!userStorage.isUserExists(otherUserId)) {
             throw new NotFoundException("Пользователя с id: " + otherUserId + " не существует");
         }
 

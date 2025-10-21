@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CanNotBeAddedAsFriendException.class)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCanNotBeAddedAsFriendExceptionException(CanNotBeAddedAsFriendException e) {
         return new ErrorResponse("No content", e.getMessage());
     }
