@@ -113,8 +113,7 @@ public class UserDbStorage implements UserStorage {
         String sql = "SELECT friend_id FROM friendship WHERE user_id = ? " +
                 "UNION " +
                 "SELECT user_id FROM friendship WHERE friend_id = ?";
-        List<Integer> friendsList = jdbcTemplate.queryForList(sql, Integer.class, userId);
-        return new HashSet<>(friendsList);
+        return new HashSet<>(jdbcTemplate.queryForList(sql, Integer.class, userId, userId));
     }
 
     @Override
