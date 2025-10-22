@@ -110,7 +110,9 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Set<Integer> getUserFriends(int userId) {
-        String sql = "SELECT friend_id from friendship where user_id = ? ";
+        String sql = "SELECT friend_id FROM friendship WHERE user_id = ? " +
+                "UNION " +
+                "SELECT user_id FROM friendship WHERE friend_id = ?";
         List<Integer> friendsList = jdbcTemplate.queryForList(sql, Integer.class, userId);
         return new HashSet<>(friendsList);
     }
