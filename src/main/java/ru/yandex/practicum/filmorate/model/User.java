@@ -53,8 +53,4 @@ public class User {
         return friends.contains(friendId);
     }
 
-    public void addRequestFriends(int friendId) {
-        requestFriends.add(friendId);
-    }
-
 }

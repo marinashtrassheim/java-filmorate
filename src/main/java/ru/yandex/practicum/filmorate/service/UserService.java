@@ -46,28 +46,12 @@ public class UserService {
         userStorage.addUserFriend(userId, friendId);
     }
 
-    public void confirmFriend(int userId, int friendId) {
-        if (!userStorage.isUserExists(userId)) {
-            throw new NotFoundException("Пользователя с id: " + userId + " не существует");
-        }
-
-        if (!userStorage.isUserExists(friendId)) {
-            throw new NotFoundException("Пользователя с id: " + friendId + " не существует");
-        }
-
-        if (userId == friendId) {
-            throw new CanNotBeAddedAsFriendException("Нельзя добавлять в друзья самого пользователя");
-        }
-
-        userStorage.confirmFriendship(userId, friendId);
-    }
-
     public void removeFriend(int userId, int friendId) {
         if (!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if (!userStorage.isUserExists(friendId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + friendId + " не существует");
         }
 
@@ -77,8 +61,9 @@ public class UserService {
             throw new CanNotBeRemovedFromFriendException("Пользователя с id: " + friendId + " нет в друзьях");
         }
 
-        userStorage.removeUserFriend(userId, friendId);
+       userStorage.removeUserFriend(userId, friendId);
     }
+
 
     public Collection<User> getFriendsDetails(int userId) {
         if (!userStorage.isUserExists(userId)) {

@@ -81,12 +81,6 @@ public class UserDbStorageIntegrationTest {
         userStorage.addUserFriend(user101.getId(), user103.getId());
         userStorage.addUserFriend(user102.getId(), user103.getId());
 
-        userStorage.confirmFriendship(user101.getId(), user102.getId());
-        userStorage.confirmFriendship(user101.getId(), user103.getId());
-        userStorage.confirmFriendship(user102.getId(), user103.getId());
-
-
-
         Collection<User> commonFriends = userStorage.getCommonFriends(user101.getId(), user102.getId());
         assertEquals(1, commonFriends.size(), "Должен быть один общий друг (user103)");
         assertTrue(commonFriends.stream().anyMatch(u -> u.getId() == user103.getId()),
@@ -96,7 +90,6 @@ public class UserDbStorageIntegrationTest {
     @Test
     void addFriend_ShouldAddFriendsToBothUsers() {
         userStorage.addUserFriend(user101.getId(), user102.getId());
-        userStorage.confirmFriendship(user101.getId(), user102.getId());
 
         User updateduser101 = userStorage.getUser(user101.getId());
         User updateduser102 = userStorage.getUser(user102.getId());

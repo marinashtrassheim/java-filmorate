@@ -78,11 +78,4 @@ public class UserController {
         return  userStorage.getUser(id);
     }
 
-    @PutMapping("/{id}/friends/{friendId}/confirm")
-    public User confirmFriend(@PathVariable int id, @PathVariable int friendId) {
-        userService.confirmFriend(id, friendId);
-        log.info("Дружба подтверждена между {} и {}", id, friendId);
-        return userStorage.getUser(id);
-    }
-
 }

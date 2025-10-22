@@ -42,16 +42,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void confirmFriendship(int userId, int friendId) {
-        User user = users.get(userId);
-        User friend = users.get(friendId);
-
-        if (user != null && friend != null) {
-            user.addRequestFriends(friendId);
-        }
-    }
-
-    @Override
     public User createUser(User user) {
         user.setId(getNextUserId());
         users.put(user.getId(), user);
@@ -80,15 +70,6 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NotFoundException("Пользователь не найден: " + userId);
         }
         return user.getFriends();
-    }
-
-    @Override
-    public Set<Integer> getFriendRequests(int userId) {
-        User user = users.get(userId);
-        if (user == null) {
-            throw new NotFoundException("Пользователь не найден: " + userId);
-        }
-        return user.getRequestFriends();
     }
 
     @Override

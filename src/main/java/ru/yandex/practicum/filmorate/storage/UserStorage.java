@@ -21,9 +21,5 @@ public interface UserStorage {
 
     void addUserFriend(int userId, int friendId);
 
-    void confirmFriendship(int userId, int friendId);
-
-    Set<Integer> getFriendRequests(int userId);
-
     void removeUserFriend(int userId, int friendId);
 }

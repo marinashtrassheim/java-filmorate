@@ -37,7 +37,6 @@ public class UserDbStorage implements UserStorage {
         Collection<User> users = jdbcTemplate.query(sql, userRowMapper);
         for (User user : users) {
             user.setFriends(getUserFriends(user.getId()));
-            user.setRequestFriends(getFriendRequests(user.getId()));
         }
         return users;
     }
@@ -54,7 +53,6 @@ public class UserDbStorage implements UserStorage {
             User user = jdbcTemplate.queryForObject(sql, userRowMapper, userId);
             if (user != null) {
                 user.setFriends(getUserFriends(userId));
-                user.setRequestFriends(getFriendRequests(userId));
             }
             return user;
         } catch (EmptyResultDataAccessException e) {
@@ -112,40 +110,25 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Set<Integer> getUserFriends(int userId) {
-        String sql = "SELECT friend_id from friendship where user_id = ? and status = 'CONFIRMED'";
+        String sql = "SELECT friend_id from friendship where user_id = ? ";
         List<Integer> friendsList = jdbcTemplate.queryForList(sql, Integer.class, userId);
         return new HashSet<>(friendsList);
-    }
-
-    public Set<Integer> getFriendRequests(int userId) {
-        String sql = "SELECT friend_id from friendship where user_id = ? and status = 'PENDING'";
-        List<Integer> requestsList = jdbcTemplate.queryForList(sql, Integer.class, userId);
-        return new HashSet<>(requestsList);
     }
 
     @Override
     public void addUserFriend(int userId, int friendId) {
         if (isFriendshipExists(userId, friendId)) {
-            throw new CanNotBeAddedAsFriendException("Заявка в друзья уже отправлена");
+            throw new CanNotBeAddedAsFriendException("Дружба уже существует");
         }
-        String sql = "INSERT INTO friendship (user_id, friend_id, status) VALUES (?, ?, 'PENDING')";
+        String sql = "INSERT INTO friendship (user_id, friend_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, userId, friendId);
-    }
-
-    @Override
-    public void confirmFriendship(int userId, int friendId) {
-        String sql = "UPDATE friendship SET status = 'CONFIRMED', updated_at = CURRENT_TIMESTAMP " +
-                "WHERE user_id = ? AND friend_id = ?";
-        jdbcTemplate.update(sql, userId, friendId);
-
-        String insertSql = "INSERT INTO friendship (user_id, friend_id, status) VALUES (?, ?, 'CONFIRMED')";
-        jdbcTemplate.update(insertSql, friendId, userId);
+        jdbcTemplate.update(sql, friendId, userId);
     }
 
     public List<User> getCommonFriends(int userId1, int userId2) {
         String sql = "SELECT u.* FROM users u " +
-                "JOIN friendship f1 ON u.id = f1.friend_id AND f1.user_id = ? AND f1.status = 'CONFIRMED' " +
-                "JOIN friendship f2 ON u.id = f2.friend_id AND f2.user_id = ? AND f2.status = 'CONFIRMED'";
+                "JOIN friendship f1 ON u.id = f1.friend_id AND f1.user_id = ? " +
+                "JOIN friendship f2 ON u.id = f2.friend_id AND f2.user_id = ? ";
         return jdbcTemplate.query(sql, userRowMapper, userId1, userId2);
     }
 
@@ -159,6 +142,6 @@ public class UserDbStorage implements UserStorage {
     private boolean isFriendshipExists(int userId, int friendId) {
         String sql = "SELECT COUNT(*) FROM friendship WHERE user_id = ? AND friend_id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId, friendId);
-        return count != null && count > 0;
+        return count > 0;
     }
 }

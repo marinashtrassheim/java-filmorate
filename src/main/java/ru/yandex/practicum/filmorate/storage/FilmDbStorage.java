@@ -176,19 +176,19 @@ public class FilmDbStorage implements FilmStorage {
     private boolean isLikeExists(int filmId, int userId) {
         String sql = "SELECT COUNT(*) FROM film_likes WHERE film_id = ? AND user_id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, filmId, userId);
-        return count != null && count > 0;
+        return count > 0;
     }
 
     private boolean isMpaExists(int mpaId) {
         String sql = "SELECT COUNT(*) FROM mpa_rating WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, mpaId);
-        return count != null && count > 0;
+        return count > 0;
     }
 
     private boolean isGenreExists(int genreId) {
         String sql = "SELECT COUNT(*) FROM genre WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, genreId);
-        return count != null && count > 0;
+        return count > 0;
     }
 
     private Set<Genre> getFilmGenres(int filmId) {

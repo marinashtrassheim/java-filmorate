@@ -5,12 +5,11 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255),
     birthday DATE
 );
+DROP TABLE IF EXISTS friendship;
 CREATE TABLE IF NOT EXISTS friendship (
     user_id INT NOT NULL,
     friend_id INT NOT NULL,
-    status VARCHAR(20) NOT NULL,
     created_at TIMESTAMP NOT null DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP,
     PRIMARY KEY (user_id, friend_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (friend_id) REFERENCES users(id),
