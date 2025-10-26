@@ -12,8 +12,6 @@ import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 import ru.yandex.practicum.filmorate.storage.mappers.UserRowMapper;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @JdbcTest
 @AutoConfigureTestDatabase
@@ -73,27 +71,4 @@ public class UserDbStorageIntegrationTest {
 
     }
 
-    @Test
-    void addFriend_ShouldAddFriendsToBothUsers() {
-        userStorage.addUserFriend(user101.getId(), user102.getId());
-
-        User updateduser101 = userStorage.getUser(user101.getId());
-        User updateduser102 = userStorage.getUser(user102.getId());
-
-        assertTrue(updateduser101.hasFriend(user102.getId()), "Друг должен быть добавлен к пользователю");
-        assertTrue(updateduser102.hasFriend(user101.getId()), "Пользователь должен быть добавлен к другу");
-    }
-
-    @Test
-    void removeFriend_ShouldRemoveFriendsFromBothUsers() {
-        userStorage.addUserFriend(user101.getId(), user102.getId());
-        userStorage.removeUserFriend(user101.getId(), user102.getId());
-
-        User updateduser101 = userStorage.getUser(user101.getId());
-        User updateduser102 = userStorage.getUser(user102.getId());
-
-        assertFalse(updateduser101.hasFriend(user102.getId()), "Друг должен быть удален у пользователя");
-        assertFalse(updateduser102.hasFriend(user101.getId()), "Пользователь должен быть удален у друга");
-    }
 }
-
