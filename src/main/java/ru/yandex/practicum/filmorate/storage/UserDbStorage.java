@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.CanNotBeAddedAsFriendException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -126,9 +125,9 @@ public class UserDbStorage implements UserStorage {
             throw new CanNotBeAddedAsFriendException("Дружба уже существует");
         }
         String sql = "INSERT INTO friendship (user_id, friend_id) VALUES (?, ?)";
-        jdbcTemplate.update(sql, userId, friendId);
+        jdbcTemplate.update(sql, friendId, userId);
         log.info("Создано записей дружбы: {}->{}",
-                userId, friendId);
+                friendId, userId);
     }
 
     public List<User> getCommonFriends(int userId1, int userId2) {
@@ -141,9 +140,9 @@ public class UserDbStorage implements UserStorage {
     @Override
     public void removeUserFriend(int userId, int friendId) {
         String sql = "DELETE FROM friendship WHERE user_id = ? AND friend_id = ?";
-        jdbcTemplate.update(sql, userId, friendId);
+        jdbcTemplate.update(sql, friendId, userId);
         log.info("Удалено записей дружбы: {}->{}",
-                userId, friendId);
+                friendId, userId);
     }
 
     private boolean isFriendshipExists(int userId, int friendId) {
