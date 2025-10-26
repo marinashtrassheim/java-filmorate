@@ -113,10 +113,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Set<Integer> getUserFriends(int userId) {
-        String sql = "SELECT friend_id FROM friendship WHERE user_id = ? " +
-                "UNION " +
-                "SELECT user_id FROM friendship WHERE friend_id = ?";
-        return new HashSet<>(jdbcTemplate.queryForList(sql, Integer.class, userId, userId));
+        String sql = "SELECT friend_id FROM friendship WHERE user_id = ?";
+        return new HashSet<>(jdbcTemplate.queryForList(sql, Integer.class, userId));
     }
 
     @Override
@@ -125,9 +123,8 @@ public class UserDbStorage implements UserStorage {
             throw new CanNotBeAddedAsFriendException("Дружба уже существует");
         }
         String sql = "INSERT INTO friendship (user_id, friend_id) VALUES (?, ?)";
-        jdbcTemplate.update(sql, friendId, userId);
-        log.info("Создано записей дружбы: {}->{}",
-                friendId, userId);
+        jdbcTemplate.update(sql, userId, friendId);
+        log.info("Добавлен друг: {}->{}", userId, friendId);
     }
 
     public List<User> getCommonFriends(int userId1, int userId2) {
@@ -140,9 +137,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public void removeUserFriend(int userId, int friendId) {
         String sql = "DELETE FROM friendship WHERE user_id = ? AND friend_id = ?";
-        jdbcTemplate.update(sql, friendId, userId);
-        log.info("Удалено записей дружбы: {}->{}",
-                friendId, userId);
+        jdbcTemplate.update(sql, userId, friendId);
+        log.info("Удален друг: {}->{}", userId, friendId);
     }
 
     private boolean isFriendshipExists(int userId, int friendId) {

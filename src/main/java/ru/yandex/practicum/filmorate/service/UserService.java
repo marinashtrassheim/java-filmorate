@@ -56,7 +56,6 @@ public class UserService {
        userStorage.removeUserFriend(userId, friendId);
     }
 
-
     public Collection<User> getFriendsDetails(int userId) {
         if (!userStorage.isUserExists(userId)) {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
