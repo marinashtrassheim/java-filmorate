@@ -65,7 +65,7 @@ public class UserController {
     @PutMapping("/{id}/friends/{friendId}")
     public User addFriend(@PathVariable int id, @PathVariable int friendId) {
         userService.addFriend(id, friendId);
-        log.info("Друг ID={} добавлен к пользователю ID={}",
+        log.info("Дружба пользователя {} с пользоватлем {} зафиксирована",
                 id, friendId);
         return userStorage.getUser(id);
     }
@@ -73,7 +73,7 @@ public class UserController {
     @DeleteMapping("/{id}/friends/{friendId}")
     public User deleteFriend(@PathVariable int id, @PathVariable int friendId) {
         userService.removeFriend(id, friendId);
-        log.info("Друг ID={} удален из списка друзей пользователя ID={}",
+        log.info("Дружба пользователя {} с пользоватлем {} прекращена",
                 id, friendId);
         return  userStorage.getUser(id);
     }
