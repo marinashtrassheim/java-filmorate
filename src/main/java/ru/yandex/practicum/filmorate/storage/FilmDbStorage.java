@@ -198,7 +198,7 @@ public class FilmDbStorage implements FilmStorage {
         return new LinkedHashSet<>(jdbcTemplate.query(sql, new GenreRowMapper(), filmId));
     }
 
-    private Set<Integer> getFilmLikes(int filmId) {
+    public Set<Integer> getFilmLikes(int filmId) {
         String sql = "SELECT user_id FROM film_likes WHERE film_id = ?";
         return new HashSet<>(jdbcTemplate.queryForList(sql, Integer.class, filmId));
     }

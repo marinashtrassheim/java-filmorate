@@ -9,20 +9,28 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 import ru.yandex.practicum.filmorate.storage.mappers.FilmRowMapper;
+import ru.yandex.practicum.filmorate.storage.mappers.UserRowMapper;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @JdbcTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Import({FilmDbStorage.class, FilmRowMapper.class})
+@Import({FilmDbStorage.class, FilmRowMapper.class, UserDbStorage.class, UserRowMapper.class})
 class FilmDbStorageIntegrationTest {
 
     private final FilmDbStorage filmStorage;
     private Film film;
+    private final UserDbStorage userStorage;
+    private User user;
 
     @BeforeEach
     void setUp() {
@@ -35,6 +43,12 @@ class FilmDbStorageIntegrationTest {
         mpa.setId(1);
         film.setMpa(mpa);
         filmStorage.createFilm(film);
+
+        user = new User();
+        user.setEmail("user101@mail.ru");
+        user.setLogin("user101");
+        user.setName("User One");
+        userStorage.createUser(user);
     }
 
     @Test
@@ -68,7 +82,12 @@ class FilmDbStorageIntegrationTest {
     }
 
     @Test
-    void setLike_ShouldAddLikeToFilm() {
+    void shouldAddUserLike() {
+        Film filmToAddLike = filmStorage.getFilm(film.getId());
+        User userLike = userStorage.getUser(user.getId());
 
+        filmStorage.addLike(filmToAddLike.getId(), userLike.getId());
+        Set<Integer> filmLikes = filmStorage.getFilmLikes(film.getId());
+        assertThat(filmLikes.contains(userLike.getId())).isTrue();
     }
 }

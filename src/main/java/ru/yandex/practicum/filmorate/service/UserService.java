@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    @Autowired
     @Qualifier("userDbStorage")
     private final UserStorage userStorage;
 

@@ -11,6 +11,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 import ru.yandex.practicum.filmorate.storage.mappers.UserRowMapper;
 
+import java.util.Set;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @JdbcTest
@@ -69,6 +71,27 @@ public class UserDbStorageIntegrationTest {
         assertThat(userFromDb.getLogin()).isEqualTo("updated_login");
         assertThat(userFromDb.getName()).isEqualTo("Updated Name");
 
+    }
+
+    @Test
+    void shouldAddAFriend() {
+        User userAddFriend = userStorage.getUser(user101.getId());
+        User userToBeAdded = userStorage.getUser(user102.getId());
+
+        userStorage.addUserFriend(userAddFriend.getId(), userToBeAdded.getId());
+        Set<Integer> userAddFriendFriends = userStorage.getUserFriends(userAddFriend.getId());
+        assertThat(userAddFriendFriends.contains(userToBeAdded.getId())).isTrue();
+    }
+
+    @Test
+    void shouldRemoveAFriend() {
+        User userDeleteFriend = userStorage.getUser(user101.getId());
+        User userToBeDeleted = userStorage.getUser(user102.getId());
+
+        userStorage.addUserFriend(userDeleteFriend.getId(), userToBeDeleted.getId());
+        userStorage.removeUserFriend(userDeleteFriend.getId(), userToBeDeleted.getId());
+        Set<Integer> userAddFriendFriends = userStorage.getUserFriends(userDeleteFriend.getId());
+        assertThat(userAddFriendFriends.contains(userDeleteFriend.getId())).isFalse();
     }
 
 }
