@@ -1,12 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.CanNotBeAddedAsFriendException;
-import ru.yandex.practicum.filmorate.exception.CanNotBeRemovedFromFriendException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
+    @Qualifier("userDbStorage")
     private final UserStorage userStorage;
 
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage")UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -25,7 +27,7 @@ public class UserService {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if (!userStorage.isUserExists(userId)) {
+        if (!userStorage.isUserExists(friendId)) {
             throw new NotFoundException("Пользователя с id: " + friendId + " не существует");
         }
 
@@ -33,14 +35,12 @@ public class UserService {
             throw new CanNotBeAddedAsFriendException("Нельзя добавлять в друзья самого пользователя");
         }
         User user = userStorage.getUser(userId);
-        User friendUser = userStorage.getUser(friendId);
 
         if (user.hasFriend(friendId)) {
             throw new CanNotBeAddedAsFriendException("Пользователя с id: " + friendId + " уже есть в друзьях");
         }
 
-        user.addFriend(friendId);
-        friendUser.addFriend(userId);
+        userStorage.addUserFriend(userId, friendId);
     }
 
     public void removeFriend(int userId, int friendId) {
@@ -48,19 +48,10 @@ public class UserService {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if (!userStorage.isUserExists(userId)) {
+        if (!userStorage.isUserExists(friendId)) {
             throw new NotFoundException("Пользователя с id: " + friendId + " не существует");
         }
-
-        User user = userStorage.getUser(userId);
-        User friendUser = userStorage.getUser(friendId);
-
-        if (!user.hasFriend(friendId)) {
-            throw new CanNotBeRemovedFromFriendException("Пользователя с id: " + friendId + " нет в друзьях");
-        }
-
-        user.removeFriend(friendId);
-        friendUser.removeFriend(userId);
+       userStorage.removeUserFriend(userId, friendId);
     }
 
     public Collection<User> getFriendsDetails(int userId) {
@@ -81,8 +72,12 @@ public class UserService {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
 
-        if (!userStorage.isUserExists(userId)) {
+        if (!userStorage.isUserExists(otherUserId)) {
             throw new NotFoundException("Пользователя с id: " + otherUserId + " не существует");
+        }
+
+        if (userId == otherUserId) {
+            throw new CanNotBeAddedAsFriendException("Требуется указать разных пользователей");
         }
 
         Collection<User> userFriends = getFriendsDetails(userId);
@@ -92,6 +87,5 @@ public class UserService {
                 .filter(otherUserFriends::contains) // только те, кто есть в обоих списках
                 .collect(Collectors.toList());
     }
-
 
 }

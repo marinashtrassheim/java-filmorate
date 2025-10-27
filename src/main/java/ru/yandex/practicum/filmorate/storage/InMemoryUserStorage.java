@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -9,9 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@Component
+@Qualifier("inMemoryUserStorage")
+@RequiredArgsConstructor
 public class InMemoryUserStorage implements UserStorage {
     public Map<Integer, User> users = new HashMap<>();
+
 
     @Override
     public Collection<User> getUsers() {
@@ -25,6 +28,17 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NotFoundException("Пользователь не найден: " + userId);
         }
         return user;
+    }
+
+    @Override
+    public void addUserFriend(int userId, int friendId) {
+        User user = users.get(userId);
+        User friend = users.get(friendId);
+
+        if (user != null && friend != null) {
+            user.addFriend(friendId);
+            friend.addFriend(userId); // для взаимной дружбы
+        }
     }
 
     @Override
@@ -56,6 +70,21 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NotFoundException("Пользователь не найден: " + userId);
         }
         return user.getFriends();
+    }
+
+    @Override
+    public void removeUserFriend(int userId, int friendId) {
+        User user = users.get(userId);
+        if (user == null) {
+            throw new NotFoundException("Пользователь не найден: " + userId);
+        }
+
+        User friend = users.get(friendId);
+        if (friend == null) {
+            throw new NotFoundException("Пользователь не найден: " + friendId);
+        }
+
+        user.removeFriend(friendId);
     }
 
     private int getNextUserId() {

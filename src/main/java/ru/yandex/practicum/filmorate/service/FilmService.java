@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.CanNotAddLikeException;
 import ru.yandex.practicum.filmorate.exception.CanNotDeleteLikeException;
@@ -14,10 +15,12 @@ import java.util.List;
 
 @Service
 public class FilmService {
+
     public final FilmStorage filmStorage;
     public final UserStorage userStorage;
 
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }
@@ -37,8 +40,8 @@ public class FilmService {
             throw new CanNotAddLikeException("Пользователя с id: " + userId + " уже ставил лайк");
         }
 
-        filmToSetLike.addLike(userId);
-        return filmToSetLike;
+        filmStorage.addLike(filmId, userId);
+        return filmStorage.getFilm(filmId);
     }
 
     public Film deleteLike(int filmId, int userId) {
@@ -56,8 +59,8 @@ public class FilmService {
             throw new CanNotDeleteLikeException("Пользователь с id: " + userId + " не ставил лайк этому фильму");
         }
 
-        filmToDeleteLike.deleteLike(userId);
-        return filmToDeleteLike;
+        filmStorage.removeLike(filmId, userId);
+        return filmStorage.getFilm(filmId);
     }
 
     public Collection<Film> topFilms(int count) {

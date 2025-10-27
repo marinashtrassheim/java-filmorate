@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
@@ -15,11 +15,15 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/users")
-@RequiredArgsConstructor
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserStorage userStorage;
     private final UserService userService;
+
+    public UserController(@Qualifier("userDbStorage") UserStorage userStorage, UserService userService) {
+        this.userStorage = userStorage;
+        this.userService = userService;
+    }
 
     @GetMapping
     public Collection<User> getUsers() {
@@ -61,7 +65,7 @@ public class UserController {
     @PutMapping("/{id}/friends/{friendId}")
     public User addFriend(@PathVariable int id, @PathVariable int friendId) {
         userService.addFriend(id, friendId);
-        log.info("Друг ID={} добавлен к пользователю ID={}",
+        log.info("Дружба пользователя {} с пользоватлем {} зафиксирована",
                 id, friendId);
         return userStorage.getUser(id);
     }
@@ -69,10 +73,9 @@ public class UserController {
     @DeleteMapping("/{id}/friends/{friendId}")
     public User deleteFriend(@PathVariable int id, @PathVariable int friendId) {
         userService.removeFriend(id, friendId);
-        log.info("Друг ID={} удален из списка друзей пользователя ID={}",
+        log.info("Дружба пользователя {} с пользоватлем {} прекращена",
                 id, friendId);
         return  userStorage.getUser(id);
     }
-
 
 }

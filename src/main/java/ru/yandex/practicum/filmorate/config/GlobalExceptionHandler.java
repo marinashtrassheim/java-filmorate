@@ -66,14 +66,22 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CanNotBeAddedAsFriendException.class)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCanNotBeAddedAsFriendExceptionException(CanNotBeAddedAsFriendException e) {
-        return new ErrorResponse("No content", e.getMessage());
+        return new ErrorResponse("Bad Request", e.getMessage());
     }
 
     @ExceptionHandler(CanNotBeRemovedFromFriendException.class)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCanNotBeRemovedFromFriendExceptionException(CanNotBeRemovedFromFriendException e) {
-        return new ErrorResponse("No content", e.getMessage());
+        return new ErrorResponse("Bad Request", e.getMessage());
     }
+
+    @ExceptionHandler(DatabaseException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)  // 409 Conflict
+    public ErrorResponse handleDatabaseException(DatabaseException e) {
+        log.warn("Ошибка работы с базой данных: {}", e.getMessage());
+        return new ErrorResponse("Database Error", e.getMessage());
+    }
+
 }
